@@ -35,3 +35,64 @@ Note: This section is for stages 2 and beyond.
    `app/main.ts`.
 1. Run `codecrafters submit` to submit your solution to CodeCrafters. Test
    output will be streamed to your terminal.
+
+# Local setup
+
+## Install bun
+
+This project runs on [bun](https://bun.sh), a fast JavaScript/TypeScript runtime.
+Install it with:
+
+```sh
+curl -fsSL https://bun.sh/install | bash
+```
+
+If you use the fish shell, reload your config to add bun to `$PATH`:
+
+```sh
+source ~/.config/fish/config.fish
+```
+
+Verify with `bun --version`.
+
+## Run locally
+
+```sh
+./your_program.sh
+```
+
+Advanced stages accept extra arguments, e.g.:
+
+```sh
+./your_program.sh --directory /path/to/files
+```
+
+## Submit to CodeCrafters
+
+1. Install the CodeCrafters CLI:
+
+   ```sh
+   curl https://codecrafters.io/install.sh | bash
+   ```
+
+2. If you cloned this repo from GitHub (not from CodeCrafters), add the
+   CodeCrafters git remote. Find your git URL from the course dashboard at
+   https://app.codecrafters.io/courses/http-server, then:
+
+   ```sh
+   git remote add codecrafters <your-codecrafters-git-url>
+   ```
+
+3. If `git` complains about "dubious ownership", fix it once:
+
+   ```sh
+   git config --global --add safe.directory /media/hdd/Build-an-HTTP-Server
+   ```
+
+4. Submit:
+
+   ```sh
+   codecrafters submit
+   ```
+
+   Test output streams to your terminal.
