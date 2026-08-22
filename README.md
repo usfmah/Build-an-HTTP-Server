@@ -1,10 +1,10 @@
 # Build an HTTP Server — TypeScript (Bun)
 
-[![progress-banner](https://backend.codecrafters.io/progress/http-server/b9a38378-e410-4ee2-adfa-15acd3c3470f)](https://app.codecrafters.io/users/usfmah?r=2qF)
+[![progress-banner](https://backend.codecrafters.io/progress/http-server/b9a38378-e410-4ee2-adfa-15acd3c3470f)](https://app.codecrafters.io/users/usfmah?r=2qF) ![Stage 4](https://img.shields.io/badge/progress-Stage%204%2F8-success)
 
 TypeScript implementation of a minimal HTTP/1.1 server from scratch — [CodeCrafters "Build Your Own HTTP Server" Challenge](https://app.codecrafters.io/courses/http-server/overview).
 
-> **Current state:** Early WIP — 2 stages completed. TCP server is up, request-line parsing and basic routing (`/` → `200`, else `404`) are implemented.
+> **Current state:** Stage 4 — TCP server, URL routing, response headers/body handling implemented.
 
 ## Current Features
 
@@ -99,7 +99,8 @@ If remote is missing: `git remote add codecrafters <your-codecrafters-git-url>` 
 
 - [x] Bind to port 4221
 - [x] Extract URL path / respond 200/404
-- [ ] Respond with `200` + body / headers (echo, user-agent, files)
+- [x] Respond with `200` + body / headers (echo)
+- [x] Stage 4 — User-Agent / headers handling
 - [ ] Concurrent connections, proper header parsing, body streaming
 - [ ] Handle `--directory`, gzip, etc. (per CodeCrafters stages)
 
