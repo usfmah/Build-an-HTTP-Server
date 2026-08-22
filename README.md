@@ -1,7 +1,6 @@
 # Build an HTTP Server — TypeScript (Bun)
 
 [![progress-banner](assets/progress-banner.svg)](https://app.codecrafters.io/users/usfmah?r=2qF)
-<!-- Manual override: original auto banner is https://backend.codecrafters.io/progress/http-server/b9a38378-e410-4ee2-adfa-15acd3c3470f (requires subscription + passing tests to reach Stage 4). Restore it when subscribed. -->
 
 TypeScript implementation of a minimal HTTP/1.1 server from scratch — [CodeCrafters "Build Your Own HTTP Server" Challenge](https://app.codecrafters.io/courses/http-server/overview).
 
