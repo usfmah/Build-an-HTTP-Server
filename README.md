@@ -34,6 +34,9 @@ codecrafters submit
 
 ## Progress
 
+- [x] Bind to a port
+- [x] Respond with 200
+- [x] Extract URL path
 - [x] Respond with body
 - [ ] Read header
 - [ ] Concurrent connections
