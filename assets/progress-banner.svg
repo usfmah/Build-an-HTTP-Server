@@ -28,21 +28,21 @@
 
   <!-- title -->
   <text x="36" y="52" font-family="'Segoe UI', system-ui, sans-serif" font-size="24" font-weight="700" fill="#f1f5f9">Build Your Own HTTP Server</text>
-  <text x="36" y="76" font-family="ui-monospace, 'JetBrains Mono', Menlo, monospace" font-size="13" fill="#94a3b8">$ bun run app/main.ts &#183; TypeScript &#183; Stage 4/8</text>
+  <text x="36" y="76" font-family="ui-monospace, 'JetBrains Mono', Menlo, monospace" font-size="13" fill="#94a3b8">$ bun run app/main.ts &#183; TypeScript &#183; Stage 1/7</text>
 
   <!-- progress bar -->
   <rect x="36" y="96" width="788" height="20" rx="10" fill="#1e293b" stroke="#334155"/>
-  <rect x="36" y="96" width="394" height="20" rx="10" fill="url(#bar)" filter="url(#glow)"/>
-  <text x="233" y="110" font-family="'Segoe UI', system-ui, sans-serif" font-size="12" font-weight="600" fill="#0f172a" text-anchor="middle">Stage 4 / 8</text>
+  <rect x="36" y="96" width="118" height="20" rx="10" fill="url(#bar)" filter="url(#glow)"/>
+  <text x="95" y="110" font-family="'Segoe UI', system-ui, sans-serif" font-size="12" font-weight="600" fill="#0f172a" text-anchor="middle">Stage 1 / 7</text>
 
   <!-- stage dots -->
   <g font-family="ui-monospace, 'JetBrains Mono', Menlo, monospace" font-size="12">
-    <circle cx="46" cy="136" r="6" fill="#22c55e"/><text x="60" y="140" fill="#e2e8f0">&#10003; port</text>
-    <circle cx="150" cy="136" r="6" fill="#22c55e"/><text x="164" y="140" fill="#e2e8f0">&#10003; routing</text>
-    <circle cx="266" cy="136" r="6" fill="#22c55e"/><text x="280" y="140" fill="#e2e8f0">&#10003; echo/body</text>
-    <circle cx="404" cy="136" r="6" fill="#22c55e"/><text x="418" y="140" fill="#e2e8f0">&#10003; headers</text>
-    <circle cx="530" cy="136" r="6" fill="#1e293b" stroke="#475569"/><text x="544" y="140" fill="#64748b">concurrency</text>
-    <circle cx="672" cy="136" r="6" fill="#1e293b" stroke="#475569"/><text x="686" y="140" fill="#64748b">files</text>
-    <circle cx="776" cy="136" r="6" fill="#1e293b" stroke="#475569"/><text x="790" y="140" fill="#64748b">gzip</text>
+    <circle cx="46" cy="136" r="6" fill="#22c55e"/><text x="60" y="140" fill="#e2e8f0">&#10003; body</text>
+    <circle cx="146" cy="136" r="6" fill="#1e293b" stroke="#475569"/><text x="160" y="140" fill="#64748b">header</text>
+    <circle cx="254" cy="136" r="6" fill="#1e293b" stroke="#475569"/><text x="268" y="140" fill="#64748b">concurrent</text>
+    <circle cx="388" cy="136" r="6" fill="#1e293b" stroke="#475569"/><text x="402" y="140" fill="#64748b">file</text>
+    <circle cx="462" cy="136" r="6" fill="#1e293b" stroke="#475569"/><text x="476" y="140" fill="#64748b">req-body</text>
+    <circle cx="584" cy="136" r="6" fill="#1e293b" stroke="#475569"/><text x="598" y="140" fill="#64748b">compression</text>
+    <circle cx="730" cy="136" r="6" fill="#1e293b" stroke="#475569"/><text x="744" y="140" fill="#64748b">persistent</text>
   </g>
 </svg>

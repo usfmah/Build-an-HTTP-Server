@@ -34,8 +34,16 @@ codecrafters submit
 
 ## Progress
 
-- [x] Bind to port 4221
-- [x] Respond with body (`/echo/`)
+- [x] Respond with body
+- [ ] Read header
 - [ ] Concurrent connections
-- [ ] File serving (`--directory`)
-- [ ] Compression
+- [ ] Return a file
+- [ ] Read request body
+- [ ] HTTP Compression
+  - [ ] Compression headers
+  - [ ] Multiple compression schemes
+  - [ ] Gzip compression
+- [ ] Persistent Connections
+  - [ ] Persistent connections
+  - [ ] Concurrent persistent connections
+  - [ ] Connection closure
