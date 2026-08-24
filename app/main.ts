@@ -9,19 +9,26 @@ const server = net.createServer((socket) => {
     const req = data.toString('utf8');
     
     const startLine = req.split('\r\n')[0];
-    console.log(startLine);
 
     const parts = startLine.split(' ');
-    console.log(parts);
 
     const URL = parts[1];
-    console.log(URL)
+
+  
 
     if (URL === '/') {
       socket.write("HTTP/1.1 200 OK\r\n\r\n");
-    } else {
+    } 
+    else if (URL.startsWith('/echo/')) {
+    const endPoint = URL.split('/')[2];
+    const contentLength = endPoint.length;
+      socket.write(`HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: ${contentLength}\r\n\r\n${endPoint}`)
+    }
+    else {
       socket.write("HTTP/1.1 404 Not Found\r\n\r\n");
     }
+
+
     socket.end();
   })
 
