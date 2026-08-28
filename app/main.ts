@@ -4,10 +4,15 @@ import * as net from "net";
 console.log("Logs from your program will appear here!");
 
 const server = net.createServer((socket) => {
+      let buffer = Buffer.alloc(0); 
 
   socket.on('data', (data: Buffer) => {
+
+ 
   try {
-    const req = data.toString('utf8');
+     buffer = Buffer.concat([buffer, data]);
+  if (!buffer.toString().includes('\r\n\r\n')) return;
+    const req = buffer.toString('utf8');
     
     const startLine = req.split('\r\n')[0];
 
@@ -16,6 +21,7 @@ const server = net.createServer((socket) => {
     if (!startLine || parts.length !== 3 || !parts[1]) {
       
           socket.write("HTTP/1.1 400 Bad Request\r\n\r\n");
+          buffer = Buffer.alloc(0);
           return socket.end();
       
     }
@@ -37,9 +43,11 @@ const server = net.createServer((socket) => {
 
 
     socket.end();
+    buffer = Buffer.alloc(0);
   } catch {
     socket.write("HTTP/1.1 400 Bad Request\r\n\r\n");
       socket.end();
+      buffer = Buffer.alloc(0);
       
   }
   }
