@@ -6,12 +6,19 @@ console.log("Logs from your program will appear here!");
 const server = net.createServer((socket) => {
 
   socket.on('data', (data: Buffer) => {
+  try {
     const req = data.toString('utf8');
     
     const startLine = req.split('\r\n')[0];
 
     const parts = startLine.split(' ');
-
+    
+    if (!startLine || parts.length !== 3 || !parts[1]) {
+      
+          socket.write("HTTP/1.1 400 Bad Request\r\n\r\n");
+          return socket.end();
+      
+    }
     const URL = parts[1];
 
   
@@ -21,7 +28,7 @@ const server = net.createServer((socket) => {
     } 
     else if (URL.startsWith('/echo/')) {
     const endPoint = URL.split('/')[2];
-    const contentLength = endPoint.length;
+    const contentLength = endPoint.length
       socket.write(`HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: ${contentLength}\r\n\r\n${endPoint}`)
     }
     else {
@@ -30,14 +37,19 @@ const server = net.createServer((socket) => {
 
 
     socket.end();
-  })
+  } catch {
+    socket.write("HTTP/1.1 400 Bad Request\r\n\r\n");
+      socket.end();
+      
+  }
+  }
+)
 
-  
+  socket.on('error', () => socket.destroy())
 
 });
-
 server.listen(4221, "localhost");
-
+server.on('error', (err) => {})
 
 
 // Starter line (either request or response)
