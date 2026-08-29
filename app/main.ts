@@ -1,4 +1,5 @@
 import * as net from "net";
+import {buildResponse} from './response.ts'
 
 console.log("Logs from your program will appear here!");
 
@@ -43,8 +44,6 @@ const server = net.createServer((socket) => {
 
 server.listen(4221, "localhost");
 
-function buildResponse(status: number, text: string, body?: string) {
-  return `HTTP/1.1 ${status} ${text}\r\nContent-Type: text/plain\r\nContent-Length: ${Buffer.byteLength(body ?? "", 'utf-8')}\r\n\r\n${body ?? ""}`;
-}
+
 
 server.on('error', (err) => {});
