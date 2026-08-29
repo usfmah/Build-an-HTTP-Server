@@ -20,7 +20,7 @@ const server = net.createServer((socket) => {
     
     if (!startLine || parts.length !== 3 || !parts[1]) {
       
-          socket.write("HTTP/1.1 400 Bad Request\r\n\r\n");
+          socket.write(buildResponse(400, "Bad"));
           buffer = Buffer.alloc(0);
           return socket.end();
       
@@ -36,17 +36,17 @@ const server = net.createServer((socket) => {
     const pathOnly = URL.split('?')[0]
     const endPoint = pathOnly.slice(6);
     const contentLength = Buffer.byteLength(endPoint, 'utf8')
-      socket.write(`HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: ${contentLength}\r\n\r\n${endPoint}`)
+      socket.write(buildResponse(200, "ok", endPoint))
     }
     else {
-      socket.write("HTTP/1.1 404 Not Found\r\n\r\n");
+      socket.write(buildResponse(404, "Not Found"));
     }
 
 
     socket.end();
     buffer = Buffer.alloc(0);
   } catch {
-    socket.write("HTTP/1.1 400 Bad Request\r\n\r\n");
+    socket.write(buildResponse(400, "Bad"));
       socket.end();
       buffer = Buffer.alloc(0);
       
@@ -58,6 +58,11 @@ const server = net.createServer((socket) => {
 
 });
 server.listen(4221, "localhost");
+
+function buildResponse (status: number, text:string, body?:string) {
+  return `HTTP/1.1 ${status} ${text}\r\nContent-Type…\r\nContent-Length: ${Buffer.byteLength(body ?? "")}\r\n\r\n${body}`
+}
+
 server.on('error', (err) => {})
 
 
