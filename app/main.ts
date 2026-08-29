@@ -1,6 +1,7 @@
 import * as net from "net";
-import {buildResponse} from './response.ts'
-import {route} from './router.ts'
+import { buildResponse } from "./response.ts";
+import { route } from "./router.ts";
+import { parseRequest } from "./parser.ts";
 
 console.log("Logs from your program will appear here!");
 
@@ -12,15 +13,13 @@ const server = net.createServer((socket) => {
       buffer = Buffer.concat([buffer, data]);
       if (!buffer.toString().includes('\r\n\r\n')) return;
       const req = buffer.toString('utf8');
-      const startLine = req.split('\r\n')[0];
-      const parts = startLine.split(' ');
-      if (!startLine || parts.length !== 3 || !parts[1]) {
+      const parsed = parseRequest(req);
+      if ('error' in parsed) {
         socket.write(buildResponse(400, "Bad Request"));
         buffer = Buffer.alloc(0);
         return socket.end();
       }
-      const path = parts[1];
-
+      const path = parsed.path;
       const res = route(path);
       socket.write(buildResponse(res.status, res.text, res.body));
 
@@ -37,7 +36,5 @@ const server = net.createServer((socket) => {
 });
 
 server.listen(4221, "localhost");
-
-
 
 server.on('error', (err) => {});
