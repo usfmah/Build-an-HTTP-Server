@@ -5,5 +5,9 @@ export function route(path: string): { status: number; text: string; body?: stri
     const param = pathOnly.slice(6); // after /echo/
     return { status: 200, text: "OK", body: param };
   }
+  if (path === '/user-agent') {
+
+    return {status: 200, text: "OK", body: }
+  }
   return { status: 404, text: "Not Found" };
 }
