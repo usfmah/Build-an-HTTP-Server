@@ -19,9 +19,8 @@ const server = net.createServer((socket) => {
         buffer = Buffer.alloc(0);
         return socket.end();
       }
-      const path = parsed.path;
-
-      const res = route(path);
+      const {path, headers}=parsed
+      const res = route(path, headers);
       socket.write(buildResponse(res.status, res.text, res.body));
 
       socket.end();
