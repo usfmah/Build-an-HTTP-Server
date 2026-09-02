@@ -11,7 +11,9 @@ A minimal HTTP/1.1 server built from scratch in TypeScript (Bun) for the [CodeCr
 - Routing:
   - `GET /` → `200 OK`
   - `GET /echo/<str>` → `200 OK` with the string echoed back as body
+  - `GET /user-agent` → `200 OK` with `User-Agent` header value
   - anything else → `404 Not Found`
+- Concurrent connections via Node event loop (per-socket buffer)
 
 ## Run
 
@@ -38,8 +40,8 @@ codecrafters submit
 - [x] Respond with 200
 - [x] Extract URL path
 - [x] Respond with body
-- [ ] Read header
-- [ ] Concurrent connections
+- [x] Read header (`/user-agent`)
+- [x] Concurrent connections (per-socket buffer + event loop)
 - [ ] Return a file
 - [ ] Read request body
 - [ ] HTTP Compression
