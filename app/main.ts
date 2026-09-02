@@ -1,14 +1,17 @@
 import * as net from "net";
-import {buildResponse} from './response.ts'
-import {route} from './router.ts'
-import {parseRequest} from './parser.ts';
+import { buildResponse } from "./response.ts";
+import { route } from "./router.ts";
+import { parseRequest } from "./parser.ts";
 
 console.log("Logs from your program will appear here!");
+
+const dirIndex = process.argv.indexOf("--directory");
+const dir = dirIndex !== -1 ? process.argv[dirIndex + 1] : undefined;
 
 const server = net.createServer((socket) => {
   let buffer = Buffer.alloc(0);
 
-  socket.on('data', (data: Buffer) => {
+  socket.on('data', async (data: Buffer) => {
     try {
       buffer = Buffer.concat([buffer, data]);
       if (!buffer.toString('utf8').includes('\r\n\r\n')) return;
@@ -19,9 +22,9 @@ const server = net.createServer((socket) => {
         buffer = Buffer.alloc(0);
         return socket.end();
       }
-      const {path, headers}=parsed
-      const res = route(path, headers);
-      socket.write(buildResponse(res.status, res.text, res.body));
+      const { path, headers } = parsed;
+      const res = await route(path, headers, dir);
+      socket.write(buildResponse(res.status, res.text, res.body, res.contentType));
 
       socket.end();
       buffer = Buffer.alloc(0);
