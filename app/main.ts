@@ -14,21 +14,28 @@ const server = net.createServer((socket) => {
   socket.on('data', async (data: Buffer) => {
     try {
       buffer = Buffer.concat([buffer, data]);
-      if (!buffer.toString('utf8').includes('\r\n\r\n')) return;
-      const req = buffer.toString('utf8');
-      const parsed = parseRequest(req);
+      let stringfyBuffer = buffer.toString('utf8');
+      const headerEnd = stringfyBuffer.indexOf('\r\n\r\n');
+      if (headerEnd === -1) return;
+      const parsed = parseRequest(stringfyBuffer);
       if ('error' in parsed) {
         socket.write(buildResponse(400, "Bad Request"));
         buffer = Buffer.alloc(0);
         return socket.end();
       }
-      const { path, headers } = parsed;
-      const res = await route(path, headers, dir);
-      socket.write(buildResponse(res.status, res.text, res.body, res.contentType));
+      const contentLength = parseInt(parsed.headers?.get('content-length') ?? '0', 10);
+      const bodyStart = headerEnd + 4;
+      const bodyReceived = stringfyBuffer.length - bodyStart; 
+      if (bodyReceived < contentLength) return; 
+      const body = stringfyBuffer.slice(bodyStart, bodyStart + contentLength);
+      const { method, path, headers } = parsed;
+      const res = await route(method, path, body, headers, dir);
+      socket.write(buildResponse(res.status, res.statusText, res.body, res.contentType));
 
       socket.end();
       buffer = Buffer.alloc(0);
-    } catch {
+    } catch (err){
+      console.log(err);
       socket.write(buildResponse(400, "Bad Request"));
       buffer = Buffer.alloc(0);
       socket.end();
