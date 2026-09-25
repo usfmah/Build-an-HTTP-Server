@@ -1,6 +1,12 @@
-export function buildResponse(status: number, text: string, body?: string, contentType: string = "text/plain") {
+export function buildResponse(status: number, text: string, body?: string | Buffer, contentType: string = "text/plain"): Buffer {
   if (body === undefined) {
-    return `HTTP/1.1 ${status} ${text}\r\n\r\n`;
+    return Buffer.from(`HTTP/1.1 ${status} ${text}\r\n\r\n`);
   }
-  return `HTTP/1.1 ${status} ${text}\r\nContent-Type: ${contentType}\r\nContent-Length: ${Buffer.byteLength(body, 'utf-8')}\r\n\r\n${body}`;
+  if (typeof body === "string") {
+    return Buffer.from(
+      `HTTP/1.1 ${status} ${text}\r\nContent-Type: ${contentType}\r\nContent-Length: ${Buffer.byteLength(body, "utf-8")}\r\n\r\n${body}`,
+    );
+  }
+  const header = `HTTP/1.1 ${status} ${text}\r\nContent-Type: ${contentType}\r\nContent-Length: ${body.length}\r\n\r\n`;
+  return Buffer.concat([Buffer.from(header), body]);
 }
