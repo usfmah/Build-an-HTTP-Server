@@ -33,7 +33,7 @@
   <!-- stat -->
   <g font-family="ui-monospace, 'JetBrains Mono', Menlo, monospace" text-anchor="end">
     <text x="824" y="52" font-size="14" fill="#64748b">PROGRESS</text>
-    <text x="824" y="88" font-size="34" font-weight="700" fill="#4ade80">90%</text>
+    <text x="824" y="88" font-size="34" font-weight="700" fill="#4ade80">100%</text>
   </g>
   <line x1="700" y1="104" x2="824" y2="104" stroke="#334155" stroke-width="1"/>
 
@@ -56,11 +56,11 @@
     <text x="546" y="149" fill="#052e16">&#10003;</text>
     <rect x="589" y="128" width="72" height="32" rx="8" fill="url(#bar)" filter="url(#glow)"/>
     <text x="625" y="149" fill="#052e16">&#10003;</text>
-    <!-- pending -->
+    <!-- all complete -->
     <rect x="668" y="128" width="72" height="32" rx="8" fill="url(#bar)" filter="url(#glow)"/>
     <text x="704" y="149" fill="#052e16">&#10003;</text>
-    <rect x="747" y="128" width="72" height="32" rx="8" fill="#16213a" stroke="#334155"/>
-    <text x="783" y="149" fill="#475569">10</text>
+    <rect x="747" y="128" width="72" height="32" rx="8" fill="url(#bar)" filter="url(#glow)"/>
+    <text x="783" y="149" fill="#052e16">&#10003;</text>
   </g>
 
   <!-- stage legend -->
