@@ -2,43 +2,45 @@
 
 [![progress-banner](assets/progress-banner.svg)](https://app.codecrafters.io/users/usfmah?r=2qF)
 
-A minimal HTTP/1.1 server built from scratch in TypeScript (Bun) for the [CodeCrafters "Build Your Own HTTP Server" challenge](https://app.codecrafters.io/courses/http-server/overview).
+A minimal HTTP/1.1 server built from scratch in TypeScript (Bun) for the [CodeCrafters "Build Your Own HTTP Server" challenge](https://app.codecrafters.io/courses/http-server/overview). No HTTP framework — just raw TCP via `node:net`, with parsing, routing, and response framing all handwritten.
 
 ## Features
 
-- TCP server on `localhost:4221` using `node:net`
-- Manual HTTP request parsing (request-line)
-- Routing:
-  - `GET /` → `200 OK`
-  - `GET /echo/<str>` → `200 OK` with the string echoed back as body
-  - `GET /user-agent` → `200 OK` with `User-Agent` header value
-  - `GET /files/<filename>` → `200 OK` with file bytes as `application/octet-stream`, else `404`
-  - `POST /files/<filename>` → `201 Created`, writes raw request body to file
-  - anything else → `404 Not Found`
-- Concurrent connections via Node event loop (per-socket buffer)
-- Binary-safe request/response handling (byte-based `Content-Length`, `Buffer` bodies)
-- Compression: `Accept-Encoding: <list containing gzip>` → `Content-Encoding: gzip` with `gzipSync`-compressed body (`Content-Length` = compressed size), otherwise uncompressed with no encoding
+- Routing: `GET /` → `200`, `GET /echo/<str>` echoes the path segment, `GET /user-agent` reflects the header, `GET /files/<name>` serves bytes from `--directory`, `POST /files/<name>` writes the raw body → `201`, anything else → `404`
+- Gzip negotiation: `Accept-Encoding: <list containing gzip>` → `gzipSync`-compressed body with `Content-Encoding: gzip` and matching `Content-Length`
+- Persistent connections: keep-alive by default with pipelining support; `Connection: close` is echoed and honored
+- Binary-safe bodies (`Buffer` end to end), path-traversal-safe file serving, per-socket buffers for concurrent clients
 
-## Run
+## Architecture
+
+- `app/main.ts` — TCP server on `localhost:4221`. Each socket gets its own byte buffer; a `while` loop drains every complete request in it, so sequential and pipelined requests are all answered. Sockets stay open unless `Connection: close` or an error occurs.
+- `app/parser.ts` — splits the request line and headers into a case-insensitive map; bodies are sliced by `Content-Length` bytes.
+- `app/router.ts` — route matching, file I/O, and gzip negotiation.
+- `app/response.ts` — status line + headers built as text, concatenated with the body as a raw `Buffer`.
+
+## Install
+
+Requires [Bun](https://bun.sh) 1.3+ (see `codecrafters.yml`).
 
 ```sh
-./your_program.sh
+git clone git@github.com:usfmah/Build-an-HTTP-Server.git
+cd Build-an-HTTP-Server
+./your_program.sh [--directory /tmp/data]
 ```
 
-Then test with:
+## Test
 
 ```sh
-curl -v http://localhost:4221/
 curl -v http://localhost:4221/echo/hello
+curl -H "Accept-Encoding: gzip" --compressed http://localhost:4221/echo/hello
+curl --http1.1 http://localhost:4221/echo/a --next http://localhost:4221/ -H "Connection: close"
 ```
 
-## Submit
-
-```sh
-codecrafters submit
-```
+Submit to CodeCrafters with `codecrafters submit`.
 
 ## Progress
+
+14/14 stages complete.
 
 - [x] Bind to a port
 - [x] Respond with 200
@@ -52,7 +54,7 @@ codecrafters submit
   - [x] Compression headers
   - [x] Multiple compression schemes
   - [x] Gzip compression
-- [ ] Persistent Connections
-  - [ ] Persistent connections
-  - [ ] Concurrent persistent connections
-  - [ ] Connection closure
+- [x] Persistent Connections
+  - [x] Persistent connections
+  - [x] Concurrent persistent connections
+  - [x] Connection closure

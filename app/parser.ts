@@ -21,13 +21,3 @@ export function parseRequest(
   return { method: parts[0], path: parts[1], headers };
 }
 
-// Support post method for file
-// Should respond with 201
-// Create a new files in the file directory with the same name of filename (writefile)
-// file contents = request body
-
-// algorithm:
-// Return type of request from parse.
-// Check if the body is ended using content-length
-// in router.ts in files branch if methos is post => write file
-// Make contnet type, contnet length optional in build response
