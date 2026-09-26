@@ -1,57 +1,110 @@
 import * as path from "node:path";
 import * as fs from "node:fs/promises";
+import * as zlib from "node:zlib";
 
+export async function route(
+  method: string,
+  reqPath: string,
+  body?: Buffer,
+  headers?: Map<string, string>,
+  dir?: string,
+): Promise<{
+  status: number;
+  statusText: string;
+  body?: string | Buffer;
+  contentType?: string;
+  contentEncoding?: string;
+}> {
+  let result: {
+    status: number;
+    statusText: string;
+    body?: string | Buffer;
+    contentType?: string;
+    contentEncoding?: string;
+  };
 
-export async function route(method: string,  reqPath: string, body?: Buffer, headers?: Map<string, string>, dir?: string): Promise<{ status: number; statusText: string; body?: string | Buffer; contentType?: string }> {
-  if (reqPath === '/') return { status: 200, statusText: "OK" };
-
-  if (reqPath.startsWith('/echo/')) {
-    const pathOnly = reqPath.split('?')[0];
+  if (reqPath === "/") {
+    result = { status: 200, statusText: "OK" };
+  } else if (reqPath.startsWith("/echo/")) {
+    const pathOnly = reqPath.split("?")[0];
     let param: string;
     try {
       param = decodeURIComponent(pathOnly.slice(6));
     } catch {
-      return { status: 400, statusText: "Bad Request" };
+      result = { status: 400, statusText: "Bad Request" };
+      return result;
     }
-    return { status: 200, statusText: "OK", body: param };
-  }
-
-  if (reqPath === '/user-agent') {
-    return { status: 200, statusText: "OK", body: headers?.get("user-agent") ?? '' };
-  }
-
-  if (reqPath.startsWith('/files/')) {
-    const rawName = reqPath.slice(7).split('?')[0];
+    result = { status: 200, statusText: "OK", body: param };
+  } else if (reqPath === "/user-agent") {
+    result = {
+      status: 200,
+      statusText: "OK",
+      body: headers?.get("user-agent") ?? "",
+    };
+  } else if (reqPath.startsWith("/files/")) {
+    const rawName = reqPath.slice(7).split("?")[0];
     let filename: string;
     try {
       filename = decodeURIComponent(rawName);
     } catch {
-      return { status: 400, statusText: "Bad Request" };
+      result = { status: 400, statusText: "Bad Request" };
+      return result;
     }
-    
-    if (!dir) return { status: 404, statusText: "Not Found" };
+
+    if (!dir) {
+      result = { status: 404, statusText: "Not Found" };
+      return result;
+    }
 
     const baseDir = path.resolve(dir);
-    const fullPath = path.resolve(baseDir, filename); 
+    const fullPath = path.resolve(baseDir, filename);
 
-    if (fullPath !== baseDir && !fullPath.startsWith(baseDir + path.sep)) {
-      return {status: 404, statusText: "Not Found"};
-    }
-    if (fullPath === baseDir) {
-      return { status: 404, statusText: "Not Found" };
+    if (
+      (fullPath !== baseDir && !fullPath.startsWith(baseDir + path.sep)) ||
+      fullPath === baseDir
+    ) {
+      result = { status: 404, statusText: "Not Found" };
+      return result;
     }
 
-    if (method === 'POST') {
+    if (method === "POST") {
       await fs.writeFile(fullPath, body ?? Buffer.alloc(0));
-      return { status: 201, statusText: "Created" };
+      result = { status: 201, statusText: "Created" };
+      return result;
     }
 
     try {
       const file = await fs.readFile(fullPath);
-      return { status: 200, statusText: "OK", body: file, contentType: "application/octet-stream" };
+      result = {
+        status: 200,
+        statusText: "OK",
+        body: file,
+        contentType: "application/octet-stream",
+      };
     } catch {
-      return { status: 404, statusText: "Not Found" };
+      result = { status: 404, statusText: "Not Found" };
+      return result;
+    }
+  } else {
+    result = { status: 404, statusText: "Not Found" };
+    return result;
+  }
+
+  if (result.body !== undefined) {
+    const acceptEncoding = headers?.get("accept-encoding") ?? "";
+    const encodings = acceptEncoding
+      .split(",")
+      .map((s) => s.trim().toLowerCase());
+    if (encodings.includes("gzip")) {
+      result.contentEncoding = "gzip";
+      const rawBytes: Buffer =
+        typeof result.body === "string"
+          ? Buffer.from(result.body, "utf-8")
+          : result.body;
+      const compressed = zlib.gzipSync(rawBytes);
+      result.body = compressed;
     }
   }
-  return { status: 404, statusText: "Not Found" };
+
+  return result;
 }

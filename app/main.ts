@@ -11,21 +11,21 @@ const dir = dirIndex !== -1 ? process.argv[dirIndex + 1] : undefined;
 const server = net.createServer((socket) => {
   let buffer = Buffer.alloc(0);
 
-  socket.on('data', async (data: Buffer) => {
+  socket.on("data", async (data: Buffer) => {
     try {
       buffer = Buffer.concat([buffer, data]);
-      const headerEnd = buffer.indexOf('\r\n\r\n');
+      const headerEnd = buffer.indexOf("\r\n\r\n");
       if (headerEnd === -1) return;
-      const headerText = buffer.subarray(0, headerEnd + 4).toString('utf8');
+      const headerText = buffer.subarray(0, headerEnd + 4).toString("utf8");
       const parsed = parseRequest(headerText);
-      if ('error' in parsed) {
+      if ("error" in parsed) {
         socket.write(buildResponse(400, "Bad Request"));
         buffer = Buffer.alloc(0);
         return socket.end();
       }
 
-      const rawLength = parsed.headers?.get('content-length') ?? '0';
-      const contentLength = rawLength === '' ? 0 : parseInt(rawLength, 10);
+      const rawLength = parsed.headers?.get("content-length") ?? "0";
+      const contentLength = rawLength === "" ? 0 : parseInt(rawLength, 10);
       if (!Number.isSafeInteger(contentLength) || contentLength < 0) {
         socket.write(buildResponse(400, "Bad Request"));
         buffer = Buffer.alloc(0);
@@ -37,11 +37,19 @@ const server = net.createServer((socket) => {
       const body = buffer.subarray(bodyStart, bodyStart + contentLength);
       const { method, path, headers } = parsed;
       const res = await route(method, path, body, headers, dir);
-      socket.write(buildResponse(res.status, res.statusText, res.body, res.contentType));
+      socket.write(
+        buildResponse(
+          res.status,
+          res.statusText,
+          res.body,
+          res.contentType,
+          res.contentEncoding,
+        ),
+      );
 
       socket.end();
       buffer = Buffer.alloc(0);
-    } catch (err){
+    } catch (err) {
       console.log(err);
       socket.write(buildResponse(400, "Bad Request"));
       buffer = Buffer.alloc(0);
@@ -49,11 +57,11 @@ const server = net.createServer((socket) => {
     }
   });
 
-  socket.on('error', () => socket.destroy());
+  socket.on("error", () => socket.destroy());
 });
 
 server.listen(4221, "localhost");
 
-server.on('error', (err) => {
+server.on("error", (err) => {
   console.log(err);
 });

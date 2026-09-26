@@ -17,6 +17,7 @@ A minimal HTTP/1.1 server built from scratch in TypeScript (Bun) for the [CodeCr
   - anything else → `404 Not Found`
 - Concurrent connections via Node event loop (per-socket buffer)
 - Binary-safe request/response handling (byte-based `Content-Length`, `Buffer` bodies)
+- Compression: `Accept-Encoding: <list containing gzip>` → `Content-Encoding: gzip` with `gzipSync`-compressed body (`Content-Length` = compressed size), otherwise uncompressed with no encoding
 
 ## Run
 
@@ -47,10 +48,10 @@ codecrafters submit
 - [x] Concurrent connections (per-socket buffer + event loop)
 - [x] Return a file (`GET /files/<filename>`)
 - [x] Read request body (`POST /files/<filename>` → `201`)
-- [ ] HTTP Compression
-  - [ ] Compression headers
-  - [ ] Multiple compression schemes
-  - [ ] Gzip compression
+- [x] HTTP Compression
+  - [x] Compression headers
+  - [x] Multiple compression schemes
+  - [x] Gzip compression
 - [ ] Persistent Connections
   - [ ] Persistent connections
   - [ ] Concurrent persistent connections
